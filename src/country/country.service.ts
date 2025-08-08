@@ -1,19 +1,24 @@
-import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
-import { Country, CountryDocument } from './country.schema';
-import { CreateCountryDto, UpdateCountryDto } from './dto/country.dto';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+} from "@nestjs/common";
+import { InjectModel } from "@nestjs/mongoose";
+import { Model } from "mongoose";
+import { Country, CountryDocument } from "./country.schema";
+import { CreateCountryDto, UpdateCountryDto } from "./dto/country.dto";
 
 @Injectable()
 export class CountryService {
   constructor(
-    @InjectModel(Country.name) private readonly countryModel: Model<CountryDocument>,
+    @InjectModel(Country.name)
+    private readonly countryModel: Model<CountryDocument>
   ) {}
 
   async findAll(): Promise<Country[]> {
     const countries = await this.countryModel.find().exec();
     if (!countries || countries.length === 0) {
-      throw new NotFoundException('No countries found.');
+      throw new NotFoundException("No countries found.");
     }
     return countries;
   }
@@ -30,15 +35,34 @@ export class CountryService {
     // Check if code already exists
     const existing = await this.countryModel.findOne({ code: dto.code }).exec();
     if (existing) {
-      throw new BadRequestException(`Country with code "${dto.code}" already exists.`);
+      throw new BadRequestException(
+        `Country with code "${dto.code}" already exists.`
+      );
     }
 
-    const newCountry = new this.countryModel(dto);
+    function slugify(text: string) {
+      return text
+        .toString()
+        .trim()
+        .toLowerCase()
+        .replace(/\s+/g, "-")
+        .replace(/[^\w\-]+/g, "")
+        .replace(/\-\-+g/, "-")
+        .replace(/^-+/, "")
+        .replace(/-+$/, "");
+    }
+
+    const newCountry = new this.countryModel({
+      ...dto,
+      slug: slugify(dto.title.en),
+    });
     return newCountry.save();
   }
 
   async update(id: string, dto: UpdateCountryDto): Promise<Country> {
-    const updated = await this.countryModel.findByIdAndUpdate(id, dto, { new: true }).exec();
+    const updated = await this.countryModel
+      .findByIdAndUpdate(id, dto, { new: true })
+      .exec();
     if (!updated) {
       throw new NotFoundException(`Country with id ${id} not found.`);
     }

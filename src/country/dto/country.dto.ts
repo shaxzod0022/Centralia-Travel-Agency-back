@@ -1,6 +1,12 @@
-import { IsString, IsNotEmpty, IsIn, IsObject, ValidateNested } from 'class-validator';
-import { Type } from 'class-transformer';
-import { PartialType } from '@nestjs/mapped-types';
+import {
+  IsString,
+  IsNotEmpty,
+  IsIn,
+  IsObject,
+  ValidateNested,
+} from "class-validator";
+import { Type } from "class-transformer";
+import { PartialType } from "@nestjs/mapped-types";
 
 class TranslationsDto {
   @IsString()
@@ -17,7 +23,7 @@ class TranslationsDto {
 
   @IsString()
   @IsNotEmpty()
-  it: string;
+  es: string;
 }
 
 export class CreateCountryDto {
@@ -40,8 +46,11 @@ export class CreateCountryDto {
   heroImageUrl: string;
 
   @IsString()
-  @IsIn(['available', 'coming_soon'])
-  status: 'available' | 'coming_soon';
+  slug: string;
+
+  @IsString()
+  @IsIn(["available", "coming_soon"])
+  status: "available" | "coming_soon";
 }
 
 export class UpdateCountryDto extends PartialType(CreateCountryDto) {}

@@ -1,6 +1,6 @@
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
-import * as crypto from 'crypto';
+import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
+import { Document } from "mongoose";
+import * as crypto from "crypto";
 
 export type AdminDocument = Admin & Document;
 
@@ -17,23 +17,10 @@ export class Admin {
 
   @Prop({
     required: true,
-    enum: ['active', 'inactive'],
-    default: 'active',
+    enum: ["active", "inactive"],
+    default: "active",
   })
-  status: 'active' | 'inactive';
+  status: "active" | "inactive";
 }
 
 export const AdminSchema = SchemaFactory.createForClass(Admin);
-
-// Hash password before saving
-AdminSchema.pre<AdminDocument>('save', function (next) {
-  if (!this.isModified('password')) return next();
-
-  const hash = crypto
-    .createHash('sha256')
-    .update(this.password)
-    .digest('hex');
-
-  this.password = hash;
-  next();
-});

@@ -6,18 +6,29 @@ import {
   IsString,
 } from "class-validator";
 
+class TranslationProps {
+  @IsString()
+  en: string;
+  @IsString()
+  es: string;
+  @IsString()
+  zh: string;
+  @IsString()
+  ru: string;
+}
+
 export class TourDto {
   @IsMongoId()
   countryRef: string;
 
   @IsObject()
-  title: { en: string; es: string; zh: string };
+  title: TranslationProps;
 
   @IsObject()
-  description: { en: string; es: string; zh: string };
+  description: TranslationProps;
 
   @IsObject()
-  country: { en: string; es: string; zh: string };
+  country: TranslationProps;
 
   @IsString()
   startLocation: string;
@@ -26,7 +37,7 @@ export class TourDto {
   endLocation: string;
 
   @IsObject()
-  season: { en: string; es: string; zh: string };
+  season: TranslationProps;
 
   @IsNumber()
   price: number;
@@ -39,13 +50,13 @@ export class TourDto {
   images: string[];
 
   @IsObject()
-  includedInPrice: { en: string; es: string; zh: string };
+  includedInPrice: TranslationProps;
 
   @IsObject()
-  whatToTake: { en: string; es: string; zh: string };
+  whatToTake: TranslationProps;
 
   @IsObject()
-  moreInfo: { en: string; es: string; zh: string };
+  moreInfo: TranslationProps;
 
   @IsString()
   slug: string;

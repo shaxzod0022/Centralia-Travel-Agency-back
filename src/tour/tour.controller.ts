@@ -1,33 +1,59 @@
-import { Controller, Get, Post, Patch, Delete, Param, Body, UseGuards } from '@nestjs/common';
-import { TourService } from './tour.service';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import {
+  Controller,
+  Get,
+  Post,
+  Delete,
+  Param,
+  Body,
+  UseGuards,
+  HttpCode,
+  HttpStatus,
+  Patch,
+} from "@nestjs/common";
+import { TourService } from "./tour.service";
+import { TourDto } from "./dto/tour.dto";
+import { JwtAuthGuard } from "../auth/jwt-auth.guard"; // agar JWT bilan himoyalasangiz
 
-@Controller('tours')
+@Controller("tours")
 export class TourController {
   constructor(private readonly tourService: TourService) {}
 
-  // Hamma uchun ochiq - Tourlarni olish
+  // Hammani olish
   @Get()
-  async findAll() {
-    return this.tourService.findAll();
+  async getAll() {
+    return this.tourService.getAll();
   }
 
-  // Quyidagi metodlar faqat admin tokeni bilan ishlaydi
-  @UseGuards(JwtAuthGuard)
+  // Id bo‘yicha olish
+  @Get(":id")
+  async getById(@Param("id") id: string) {
+    return this.tourService.getById(id);
+  }
+
+  // Mamlakat bo‘yicha olish
+  @Get("country/:countryId")
+  async getByCountry(@Param("countryId") countryId: string) {
+    return this.tourService.getByCountry(countryId);
+  }
+
+  // Quyidagilarni faqat admin tokeni bilan himoyalash kerak:
+
+  // @UseGuards(JwtAuthGuard)
   @Post()
-  async create(@Body() createTourDto) {
-    return this.tourService.create(createTourDto);
+  async create(@Body() dto: TourDto) {
+    return this.tourService.create(dto);
   }
 
-  @UseGuards(JwtAuthGuard)
-  @Patch(':id')
-  async update(@Param('id') id: string, @Body() updateTourDto) {
-    return this.tourService.update(id, updateTourDto);
+  // @UseGuards(JwtAuthGuard)
+  @Patch(":id")
+  async update(@Param("id") id: string, @Body() dto: Partial<TourDto>) {
+    return this.tourService.update(id, dto);
   }
 
-  @UseGuards(JwtAuthGuard)
-  @Delete(':id')
-  async remove(@Param('id') id: string) {
-    return this.tourService.remove(id);
+  // @UseGuards(JwtAuthGuard)
+  @Delete(":id")
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async delete(@Param("id") id: string) {
+    await this.tourService.delete(id);
   }
 }

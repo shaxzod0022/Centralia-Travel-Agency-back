@@ -1,20 +1,29 @@
-import { IsEmail, IsEnum, IsNotEmpty, IsOptional, IsString, MinLength } from 'class-validator';
+import {
+  IsEmail,
+  IsEnum,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  MinLength,
+} from "class-validator";
 
 export class CreateAdminDto {
   @IsString()
-  @IsNotEmpty({ message: 'Username is required' })
+  @IsNotEmpty({ message: "Username is required" })
   username: string;
 
-  @IsEmail({}, { message: 'Invalid email address' })
+  @IsEmail({}, { message: "Invalid email address" })
   email: string;
 
   @IsString()
-  @MinLength(6, { message: 'Password must be at least 6 characters long' })
+  @MinLength(6, { message: "Password must be at least 6 characters long" })
   password: string;
 
-  @IsEnum(['active', 'inactive'], { message: 'Status must be either active or inactive' })
+  @IsEnum(["active", "inactive"], {
+    message: "Status must be either active or inactive",
+  })
   @IsOptional()
-  status?: 'active' | 'inactive';
+  status?: "active" | "inactive";
 }
 
 export class UpdateAdminDto {
@@ -22,16 +31,18 @@ export class UpdateAdminDto {
   @IsOptional()
   username?: string;
 
-  @IsEmail({}, { message: 'Invalid email address' })
+  @IsEmail({}, { message: "Invalid email address" })
   @IsOptional()
   email?: string;
 
   @IsString()
-  @MinLength(6, { message: 'Password must be at least 6 characters long' })
+  @MinLength(6, { message: "Password must be at least 6 characters long" })
   @IsOptional()
   password?: string;
 
-  @IsEnum(['active', 'inactive'], { message: 'Status must be either active or inactive' })
+  @IsEnum(["active", "inactive"], {
+    message: "Status must be either active or inactive",
+  })
   @IsOptional()
-  status?: 'active' | 'inactive';
+  status?: "active" | "inactive";
 }

@@ -1,7 +1,7 @@
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
+import { HydratedDocument } from "mongoose";
 
-export type CountryDocument = Country & Document;
+export type CountryDocument = HydratedDocument<Country>;
 
 @Schema({ timestamps: true })
 export class Country {
@@ -43,8 +43,11 @@ export class Country {
   @Prop({ required: true })
   heroImageUrl: string;
 
-  @Prop({ enum: ['available', 'coming_soon'], default: 'coming_soon' })
-  status: 'available' | 'coming_soon';
+  @Prop({ required: true })
+  slug: string;
+
+  @Prop({ enum: ["available", "coming_soon"], default: "coming_soon" })
+  status: "available" | "coming_soon";
 }
 
 export const CountrySchema = SchemaFactory.createForClass(Country);
